@@ -1,15 +1,60 @@
+#!/usr/bin/python3
+'''Minimum Operations python3 challenge'''
+
+
 def minOperations(n):
-    if n == 1:
-        return 0  # Base case: only one H character already exists
+    '''calculates the fewest number of
+    operations needed to result in exactly n H
+    characters in this file.
+    Returns:
+        Integer : if n is impossible to achieve, return 0
+    '''
+    pasted_letters = 1  # how many chars in the file
+    clipboard = 0  # how many H's copied
+    counter = 0  # operations counter
 
-    operations = 0
-    clipboard = 1  # Initially, we have one H character in the clipboard
-    file_contents = 1  # Initially, the file contains one H character
+    while pasted_letters < n:
+        # if did not copy anything yet
+        if clipboard == 0:
+            # copyall
+            clipboard = pasted_letters
+            # increment operations counter
+            counter += 1
 
-    while file_contents < n:
-        if n % file_contents == 0:
-            clipboard = file_contents
-        file_contents += clipboard
-        operations += 1
+        # if haven't pasted anything yet
+        if pasted_letters == 1:
+            # paste
+            pasted_letters += clipboard
+            # increment operations counter
+            counter += 1
+            # continue to next loop
+            continue
 
-    return operations if file_contents == n else 0
+        remaining = n - pasted_letters  # remaining chars to Paste
+        # check if impossible by checking if clipboard
+        # has more than needed to reach the number desired
+        # which also means num of chars in file is equal
+        # or more than in the clipboard.
+        # in both situations it's impossible to achieve n of chars
+        if remaining < clipboard:
+            return 0
+
+        # if can't be devided
+        if remaining % pasted_letters != 0:
+            # paste current clipboard
+            pasted_letters += clipboard
+            # increment operations counter
+            counter += 1
+        else:
+            # copyall
+            clipboard = pasted_letters
+            # paste
+            pasted_letters += clipboard
+            # increment operations counter
+            counter += 2
+
+    # if got the desired result
+    if pasted_letters == n:
+        return counter
+    else:
+        return 0
